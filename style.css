@@ -1,0 +1,466 @@
+/* CS:GO HvH Arena: Authentic Gamesense / Neverlose Aesthetic */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+body, html {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: #0b0e14;
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    color: #e6edf3;
+}
+
+#canvas-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+#esp-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* 2D Crosshair */
+#crosshair {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 10;
+}
+.ch-line {
+    position: absolute;
+    background: #00ff66;
+    box-shadow: 0 0 2px #000;
+}
+.ch-top { width: 2px; height: 8px; top: -12px; left: -1px; }
+.ch-bottom { width: 2px; height: 8px; top: 4px; left: -1px; }
+.ch-left { width: 8px; height: 2px; left: -12px; top: -1px; }
+.ch-right { width: 8px; height: 2px; left: 4px; top: -1px; }
+.ch-dot { width: 2px; height: 2px; top: -1px; left: -1px; background: #00ff66; }
+
+/* Sniper Scope Overlay */
+#scope-overlay {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9;
+}
+.scope-hair-v {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 1px;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+}
+.scope-hair-h {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: rgba(0, 0, 0, 0.85);
+}
+.scope-vignette {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, transparent 38%, rgba(0,0,0,0.98) 72%);
+}
+
+/* Watermark (Top Right) */
+#watermark {
+    position: absolute;
+    top: 14px;
+    right: 18px;
+    padding: 6px 14px;
+    background: rgba(13, 17, 23, 0.88);
+    border: 1px solid #232c37;
+    border-top: 2px solid #a4d037;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 13px;
+    font-weight: bold;
+    color: #e6edf3;
+    z-index: 10;
+    border-radius: 2px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+
+/* Event Logs (Top Left) */
+#event-logs {
+    position: absolute;
+    top: 14px;
+    left: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    pointer-events: none;
+    z-index: 10;
+}
+.log-entry {
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    text-shadow: 1px 1px 2px #000;
+    background: rgba(13, 17, 23, 0.75);
+    padding: 3px 8px;
+    border-left: 2px solid #a4d037;
+    border-radius: 2px;
+    transition: opacity 1.5s ease;
+}
+.log-tag {
+    color: #a4d037;
+    font-weight: bold;
+}
+
+/* HUD Info Bar (Bottom Left / Bottom Right) */
+#hud-bottom {
+    position: absolute;
+    bottom: 20px;
+    left: 24px;
+    right: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    pointer-events: none;
+    z-index: 10;
+}
+.hud-card {
+    background: rgba(13, 17, 23, 0.85);
+    border: 1px solid #232c37;
+    padding: 10px 18px;
+    border-radius: 4px;
+    font-family: 'Consolas', monospace;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+.hud-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: #8b949e;
+}
+.hud-value {
+    font-size: 26px;
+    font-weight: bold;
+    color: #00e5ff;
+}
+.hud-hp-val {
+    color: #a4d037;
+}
+
+/* Floating Menu HUD Button */
+#open-menu-hud-btn {
+    position: absolute;
+    bottom: 22px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #161b22;
+    border: 1px solid #a4d037;
+    color: #a4d037;
+    padding: 8px 18px;
+    font-family: 'Consolas', monospace;
+    font-weight: bold;
+    font-size: 13px;
+    cursor: pointer;
+    border-radius: 4px;
+    z-index: 15;
+    box-shadow: 0 0 10px rgba(164, 208, 55, 0.25);
+    transition: all 0.2s ease;
+}
+#open-menu-hud-btn:hover {
+    background: #a4d037;
+    color: #000;
+}
+
+/* Click to Play Overlay */
+#click-to-play {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(11, 14, 20, 0.75);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 20;
+    backdrop-filter: blur(4px);
+}
+.play-title {
+    font-size: 42px;
+    font-weight: 900;
+    letter-spacing: 3px;
+    color: #ffffff;
+    margin-bottom: 8px;
+    text-shadow: 0 0 20px #a4d037;
+}
+.play-sub {
+    font-size: 16px;
+    color: #a4d037;
+    font-family: 'Consolas', monospace;
+    margin-bottom: 24px;
+}
+.play-btn {
+    padding: 14px 38px;
+    background: #a4d037;
+    color: #0d1117;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 4px;
+    box-shadow: 0 0 25px rgba(164, 208, 55, 0.5);
+    transition: transform 0.15s ease;
+}
+.play-btn:hover {
+    transform: scale(1.05);
+}
+.play-hints {
+    margin-top: 25px;
+    font-size: 13px;
+    color: #8b949e;
+    text-align: center;
+    line-height: 1.8;
+}
+
+/* THE CHEAT MENU (SKEET / GAMESENSE RECREATION) */
+#cheat-menu {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 780px;
+    height: 520px;
+    background: #111417;
+    border: 1px solid #28313d;
+    border-top: 3px solid #a4d037;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.85);
+    border-radius: 4px;
+    flex-direction: column;
+    z-index: 30;
+}
+
+.menu-header {
+    height: 42px;
+    background: #15191e;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 16px;
+    border-bottom: 1px solid #232c37;
+}
+.menu-title {
+    font-family: 'Consolas', monospace;
+    font-size: 14px;
+    font-weight: bold;
+    color: #a4d037;
+    letter-spacing: 1px;
+}
+.menu-close {
+    background: none;
+    border: none;
+    color: #8b949e;
+    font-size: 20px;
+    cursor: pointer;
+}
+.menu-close:hover {
+    color: #ff3344;
+}
+
+.menu-body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* Tabs list */
+.menu-tabs {
+    width: 170px;
+    background: #13171c;
+    border-right: 1px solid #232c37;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 0;
+}
+.menu-tab {
+    padding: 12px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #8b949e;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.15s ease;
+}
+.menu-tab:hover {
+    color: #ffffff;
+    background: #181d24;
+}
+.menu-tab.active {
+    color: #a4d037;
+    background: #1c222b;
+    border-left: 3px solid #a4d037;
+}
+
+/* Tab content panes */
+.tab-content {
+    display: none;
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+.tab-content.active {
+    display: block;
+}
+
+.cfg-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+.cfg-box {
+    background: #151a21;
+    border: 1px solid #232c37;
+    border-radius: 4px;
+    padding: 16px;
+}
+.cfg-box-title {
+    font-size: 13px;
+    font-weight: bold;
+    color: #a4d037;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid #232c37;
+    padding-bottom: 8px;
+    margin-bottom: 14px;
+}
+
+/* Config Row items */
+.cfg-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    font-size: 13px;
+    color: #c9d1d9;
+}
+.cfg-slider-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+}
+.cfg-slider-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+}
+.cfg-val-badge {
+    color: #a4d037;
+    font-family: 'Consolas', monospace;
+    font-weight: bold;
+}
+
+/* Custom Checkbox */
+input[type="checkbox"] {
+    accent-color: #a4d037;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+/* Custom Slider */
+input[type="range"] {
+    width: 100%;
+    accent-color: #a4d037;
+    cursor: pointer;
+}
+
+/* Custom Select Dropdowns */
+select {
+    background: #0f1317;
+    border: 1px solid #2b3542;
+    color: #e6edf3;
+    padding: 5px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+/* Buttons */
+.btn-action {
+    background: #1d242e;
+    border: 1px solid #364252;
+    color: #e6edf3;
+    padding: 8px 14px;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+.btn-action:hover {
+    background: #a4d037;
+    color: #000;
+}
+.btn-primary {
+    background: #a4d037;
+    color: #000;
+    border: none;
+}
+.btn-primary:hover {
+    background: #88cc00;
+}
+
+/* Weapon Bar in Misc */
+.weapon-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+
+/* Multiplayer Lobby Share Box */
+.lobby-box {
+    margin-top: 15px;
+    padding: 12px;
+    background: #0d1117;
+    border: 1px solid #232c37;
+    border-radius: 4px;
+}
+.lobby-input-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+.lobby-input-row input {
+    flex: 1;
+    background: #161b22;
+    border: 1px solid #30363d;
+    color: #00e5ff;
+    padding: 6px 10px;
+    font-family: 'Consolas', monospace;
+    font-size: 12px;
+}

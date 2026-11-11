@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>HVH ARENA: NO INTEGRITY (CS:GO HvH Simulator)</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Three.js 3D Engine -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- PeerJS for 100% Free WebRTC Multiplayer on GitHub Pages -->
+    <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+</head>
+<body>
+    <!-- 3D Three.js Viewport -->
+    <div id="canvas-container"></div>
+
+    <!-- 2D Overlay for ESP, Skeletons, Offscreen Warnings & Hitmarkers -->
+    <canvas id="esp-canvas"></canvas>
+
+    <!-- Crosshair -->
+    <div id="crosshair">
+        <div class="ch-line ch-top"></div>
+        <div class="ch-line ch-bottom"></div>
+        <div class="ch-line ch-left"></div>
+        <div class="ch-line ch-right"></div>
+        <div class="ch-dot"></div>
+    </div>
+
+    <!-- Sniper Scope Overlay -->
+    <div id="scope-overlay">
+        <div class="scope-vignette"></div>
+        <div class="scope-hair-v"></div>
+        <div class="scope-hair-h"></div>
+    </div>
+
+    <!-- Watermark -->
+    <div id="watermark">gamesense | fps: 144 | ping: 0ms | tick: 64</div>
+
+    <!-- Hitlogs / Event Console -->
+    <div id="event-logs"></div>
+
+    <!-- HUD Bar (Health, Weapon, Ammo) -->
+    <div id="hud-bottom">
+        <div class="hud-card">
+            <div class="hud-label">+ HEALTH</div>
+            <div id="hud-hp" class="hud-value hud-hp-val">100</div>
+        </div>
+        <div class="hud-card">
+            <div class="hud-label">EQUIPPED WEAPON</div>
+            <div id="hud-weapon" class="hud-value" style="font-size: 18px; margin-top: 4px;">SCAR-20 Auto</div>
+        </div>
+        <div class="hud-card">
+            <div class="hud-label">AMMO</div>
+            <div id="hud-ammo" class="hud-value">20 / 20</div>
+        </div>
+    </div>
+
+    <!-- HUD Button to open Cheat Menu -->
+    <button id="open-menu-hud-btn">⚙️ HVH MENU [INSERT]</button>
+
+    <!-- Start / Click to Play Screen -->
+    <div id="click-to-play">
+        <div class="play-title">HVH ARENA</div>
+        <div class="play-sub">NO INTEGRITY: HACKS ARE THE GAME MECHANIC</div>
+        <div class="play-btn">CLICK TO PLAY</div>
+        <div class="play-hints">
+            <b>Управление:</b> WASD — Движение | ПРОБЕЛ (зажать) — Авто-Баннихоп | Клик мыши — Стрельба<br>
+            <b>[INSERT] / [DEL] / [M]</b> — Открыть Меню Чита (Ragebot, Anti-Aim, Chams, ESP, Лобби)<br>
+            <b>1-5</b> — Выбор Оружия (1: SCAR-20 Auto, 2: Scout, 3: AWP, 4: Deagle, 5: Dualies)<br>
+            <b>ПКМ / [E]</b> — Прицел Снайперки | <b>[R]</b> — Перезарядка
+        </div>
+    </div>
+
+    <!-- THE CHEAT MENU (SKEET / GAMESENSE RECREATION) -->
+    <div id="cheat-menu">
+        <div class="menu-header">
+            <span class="menu-title">[ gamesense.pub ] - HvH Core Engine v2.4</span>
+            <button id="close-menu-btn" class="menu-close">&times;</button>
+        </div>
+
+        <div class="menu-body">
+            <!-- Tab list -->
+            <div class="menu-tabs">
+                <div class="menu-tab active" data-tab="ragebot">🎯 Ragebot</div>
+                <div class="menu-tab" data-tab="antiaim">🔄 Anti-Aim</div>
+                <div class="menu-tab" data-tab="visuals">👁️ Visuals & ESP</div>
+                <div class="menu-tab" data-tab="misc">⚡ Misc & Guns</div>
+                <div class="menu-tab" data-tab="multiplayer">🌐 Multiplayer</div>
+                <div class="menu-tab" data-tab="configs">💾 Configs</div>
+            </div>
+
+            <!-- TAB 1: RAGEBOT -->
+            <div id="tab-ragebot" class="tab-content active">
+                <div class="cfg-grid">
+                    <div class="cfg-box">
+                        <div class="cfg-box-title">Main Ragebot</div>
+                        <div class="cfg-row">
+                            <span>Enable Master Ragebot</span>
+                            <input type="checkbox" id="cfg-rage-enabled" checked>
+                        </div>
+                        <div class="cfg-row">
+                            <span>Silent Aim (Crosshair Lock Free)</span>
+                            <input type="checkbox" id="cfg-rage-silent" checked>
+                        </div>
+                        <div class="cfg-row">
+                            <span>Auto Fire</span>
+                            <input type="checkbox" id="cfg-rage-autofire" checked>
+                        </div>
+                        <div class="cfg-row">
+                            <span>Auto Wall (Wallbang Pen)</span>
+                            <input type="checkbox" id="cfg-rage-autowall" checked>
+                        </div>
+                        <div class="cfg-row">
+                            <span>Auto Stop (Zero Velocity on Fire)</span>
+                            <input type="checkbox" id="cfg-rage-autostop" checked>
+                        </div>
+                        <div class="cfg-row">
+                            <span>Auto Scope (Zoom Snipers)</span>
+                            <input type="checkbox" id="cfg-rage-autoscope" checked>
+                        </div>
+                        <div class="cfg-row">
+                            <span>Double Tap (Rapid 2-Shot)</span>
+                            <input type="checkbox" id="cfg-rage-doubletap" checked>
+                        </div>
+                    </div>
+
+                    <div class="cfg-box">
+                        <div class="cfg-box-title">Accuracy & Target Selection</div>
+                        <div class="cfg-row cfg-slider-row">
+                            <div class="cfg-slider-header">
+                                <span>Hit Chance</span>
+                                <span id="val-rage-hitchance" class="cfg-val-badge">75</span>%
+                            </div>
+                            <input type="range" id="cfg-rage-hitchance" min="0" max="100" value="75">
+                        </div>
+                        <div class="cfg-row cfg-slider-row">
+                            <div class="cfg-slider-header">
+                                <span>Minimum Damage</span>
+                                <span id="val-rage-mindamage" class="cfg-val-badge">25</span>
+                            </div>
+                            <input type="range" id="cfg-rage-mindamage" min="1" max="100" value="25">
+                        </div>
+                        <div class="cfg-row">
+                            <span>Backtrack (Lag Compensation)</span>
+                            <input type="checkbox" id="cfg-rage-backtrack" checked>
+                        </div>
+                        <div class="cfg-row cfg-slider-row">
+                            <div class="cfg-slider-header">
+                                <span>Backtrack Ticks (Max 16)</span>
+                                <span id="val-rage-btticks" class="cfg-val-badge">12</span>
+                            </div>
+                            <input type="range" id="cfg-rage-btticks" min="1" max="16" value="12">
+                        </div>
+                        <div class="cfg-row">
+                            <span>HvH Resolver (Anti-Desync)</span>
+                            <input type="checkbox" id="cfg-rage-resolver" checked>
+                        </div>
+                        <div class="cfg-box-title" style="margin-top: 10px;">Hitboxes</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; font-size: 12px;">
+                            <label><input type="checkbox" id="cfg-hb-head" checked> Head</label>
+                            <label><input type="checkbox" id="cfg-hb-chest" checked> Chest</label>
+                            <label><input type="checkbox" id="cfg-hb-stomach" checked> Stomach</label>
+                            <label><input type="checkbox" id="cfg-hb-pelvis" checked> Pelvis</label>
+                            <label><input type="checkbox" id="cfg-hb-arms"> Arms</label>
+                            <label><input type="checkbox" id="cfg-hb-legs"> Legs</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: ANTI-AIM -->
+            <div id="tab-antiaim" class="tab-content">
+                <div class="cfg-grid">
+                    <div class="cfg-box">
+                        <div class="cfg-box-title">Angles & Spinbot</div>
+                        <div class="cfg-row">
+                            <span>Enable Anti-Aim</span>
+                            <input type="checkbox" id="cfg-aa-enabled" checked>
+                        </div>
+                        <div class="cfg-row">
+                            <span>Pitch</span>
+                            <select id="cfg-aa-pitch">
+                                <option value="down">Emotion / Down (-89°)</option>
+                                <option value="zero">Zero (0°)</option>
+                                <option value="up">Up (89°)</option>
+                                <option value="jitter">Jitter</option>
+                            </select>
+                        </div>
+                        <div class="cfg-row">
+                            <span>Yaw Base</span>
+                            <select id="cfg-aa-yaw">
+                                <option value="backward">Backward (180°)</option>
+                                <option value="spin">Spinbot (360°)</option>
+                                <option value="jitter">Jitter Random</option>
+                            </select>
+                        </div>
+                        <div class="cfg-row cfg-slider-row">
+                            <div class="cfg-slider-header">
+                                <span>Spin Speed</span>
+                                <span id="val-aa-spinspeed" class="cfg-val-badge">15</span>
+                            </div>
+                            <input type="range" id="cfg-aa-spinspeed" min="1" max="50" value="15">
+                        </div>
+                    </div>
+
+                    <div class="cfg-box">
+                        <div class="cfg-box-title">Desync & Fake Lag</div>
+                        <div class="cfg-row">
+                            <span>Fake Desync (Fake Angle)</span>
+                            <input type="checkbox" id="cfg-aa-desync" checked>
+                        </div>
+                        <div class="cfg-row cfg-slider-row">
+                            <div class="cfg-slider-header">
+                                <span>Desync Delta Angle</span>
+                                <span id="val-aa-desyncangle" class="cfg-val-badge">58</span>°
+                            </div>
+                            <input type="range" id="cfg-aa-desyncangle" min="0" max="58" value="58">
+                        </div>
+                        <div class="cfg-row">
+                            <span>LBY Flick / Balance</span>
+                            <input type="checkbox" id="cfg-aa-lby" checked>
+                        </div>
+                        <div class="cfg-row">
+                            <span>Fake Lag (Choke Packets)</span>
+                            <input type="checkbox" id="cfg-aa-fakelag" checked>
+                        </div>
+                        <div class="cfg-row cfg-slider-row">
+                            <div class="cfg-slider-header">
+                                <span>Choke Ticks (1-14)</span>
+                                <span id="val-aa-choke" class="cfg-val-badge">8</span>
+                            </div>
+                            <input type="range" id="cfg-aa-choke" min="1" max="14" value="8">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: VISUALS -->
+            <div id="tab-visuals" class="tab-content">
+                <div class="cfg-grid">
+                    <div class="cfg-box">
+                        <div class="cfg-box-title">ESP Overlays</div>
+                        <div class="cfg-row">
+                            <span>Master ESP</span>
+                            <input type="checkbox" id="cfg-esp-enabled" checked>
+                        </div>
+                        <div class="cfg-row">
+                            <span>2D Bounding Box</span>
+                            <input type="checkbox" id="cfg-esp-box" checked>
+                        </div>
+                        <div class="cfg-row">
+                            <span>Player Name</span>
+                            <input type="checkbox" id="cfg-esp-name" checked>
+                        </div>
+                        <div class="cfg-row">
+                            <span>Health Bar (Dynamic Color)</span>
+                            <input type="checkbox" id="cfg-esp-health" checked>
+                        </div>
+                        <div class="cfg-row">
+                            <span>Weapon Text</span>
+                            <input type="checkbox" id="cfg-esp-weapon" checked>
+                        </div>
+                        <div class="cfg-row">
+                            <span>Skeleton ESP (Bone lines)</span>
+                            <input type="checkbox" id="cfg-esp-skeleton" checked>
+                        </div>
+                        <div class="cfg-row">
+                            <span>Off-Screen Arrows</span>
+                            <input type="checkbox" id="cfg-esp-offscreen" checked>
+                        </div>
+                    </div>
+
+                    <div class="cfg-box">
+                        <div class="cfg-box-title">Chams & Camera</div>
+                        <div class="cfg-row">
+                            <span>Bullet Beams (Tracers)</span>
+                            <input type="checkbox" id="cfg-esp-tracers" checked>
+                        </div>
+                        <div class="cfg-row">
+                            <span>Thirdperson Mode</span>
+                            <input type="checkbox" id="cfg-esp-thirdperson" checked>
+                        </div>
+                        <div class="cfg-row cfg-slider-row">
+                            <div class="cfg-slider-header">
+                                <span>Thirdperson Distance</span>
+                                <span id="val-esp-tpdist" class="cfg-val-badge">180</span>
+                            </div>
+                            <input type="range" id="cfg-esp-tpdist" min="100" max="300" value="180">
+                        </div>
+                        <div class="cfg-row">
+                            <span>Show Fake Desync Ghost</span>
+                            <input type="checkbox" id="cfg-esp-fakeghost" checked>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: MISC & GUNS -->
+            <div id="tab-misc" class="tab-content">
+                <div class="cfg-grid">
+                    <div class="cfg-box">
+                        <div class="cfg-box-title">Movement & FOV</div>
+                        <div class="cfg-row">
+                            <span>Auto Bunnyhop (Hold Space)</span>
+                            <input type="checkbox" id="cfg-misc-bhop" checked>
+                        </div>
+                        <div class="cfg-row">
+                            <span>Air Strafe Assistant</span>
+                            <input type="checkbox" id="cfg-misc-autostrafe" checked>
+                        </div>
+                        <div class="cfg-row cfg-slider-row">
+                            <div class="cfg-slider-header">
+                                <span>Camera FOV</span>
+                                <span id="val-misc-fov" class="cfg-val-badge">95</span>°
+                            </div>
+                            <input type="range" id="cfg-misc-fov" min="60" max="120" value="95">
+                        </div>
+                    </div>
+
+                    <div class="cfg-box">
+                        <div class="cfg-box-title">Equip Weapon</div>
+                        <div class="weapon-grid">
+                            <button class="btn-action btn-weapon-select" data-weapon="scar20">SCAR-20 (Auto)</button>
+                            <button class="btn-action btn-weapon-select" data-weapon="scout">SSG-08 (Scout)</button>
+                            <button class="btn-action btn-weapon-select" data-weapon="awp">AWP Magnum</button>
+                            <button class="btn-action btn-weapon-select" data-weapon="deagle">Desert Eagle</button>
+                            <button class="btn-action btn-weapon-select" data-weapon="duals">Dual Berettas</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 5: MULTIPLAYER & BOTS -->
+            <div id="tab-multiplayer" class="tab-content">
+                <div class="cfg-grid">
+                    <div class="cfg-box">
+                        <div class="cfg-box-title">Play With Friends (GitHub Pages WebRTC)</div>
+                        <p style="font-size: 12px; color: #8b949e; margin-bottom: 12px; line-height: 1.4;">
+                            Работает прямо через браузер без сторонних серверов! Создайте комнату и отправьте ссылку другу.
+                        </p>
+                        <button id="btn-create-lobby" class="btn-action btn-primary" style="width: 100%; margin-bottom: 12px;">+ CREATE MULTIPLAYER LOBBY</button>
+
+                        <div class="cfg-row" style="margin-top: 10px;">
+                            <span>Join by Room Code:</span>
+                        </div>
+                        <div class="lobby-input-row">
+                            <input type="text" id="room-code-input" placeholder="e.g. hvh-4821">
+                            <button id="btn-join-lobby" class="btn-action">JOIN</button>
+                        </div>
+
+                        <div id="lobby-share-box" class="lobby-box" style="display: none;">
+                            <div style="font-size: 11px; color: #a4d037; font-weight: bold;">SHAREABLE INVITE LINK:</div>
+                            <div class="lobby-input-row">
+                                <input type="text" id="share-link-input" readonly>
+                                <button id="btn-copy-link" class="btn-action">Copy Link</button>
+                            </div>
+                        </div>
+
+                        <div id="room-status-text" style="margin-top: 12px; font-size: 12px; font-family: monospace; color: #00e5ff;">
+                            Status: Offline / Local Mode
+                        </div>
+                    </div>
+
+                    <div class="cfg-box">
+                        <div class="cfg-box-title">HvH Practice Bots</div>
+                        <p style="font-size: 12px; color: #8b949e; margin-bottom: 12px; line-height: 1.4;">
+                            Боты используют спинбот, десинк, автостоп, скаутинг и резорвер.
+                        </p>
+                        <div class="cfg-row cfg-slider-row">
+                            <div class="cfg-slider-header">
+                                <span>Active Bot Count</span>
+                                <span id="bot-count-val" class="cfg-val-badge">3</span>
+                            </div>
+                            <input type="range" id="bot-count-slider" min="0" max="4" value="3">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 6: CONFIGS -->
+            <div id="tab-configs" class="tab-content">
+                <div class="cfg-box">
+                    <div class="cfg-box-title">Preset Configs</div>
+                    <div class="cfg-row">
+                        <span>Select Preset:</span>
+                        <select id="preset-select" style="width: 220px;">
+                            <option value="Skeet 2018 HvH">Skeet 2018 HvH (Backward AA + SCAR-20)</option>
+                            <option value="Neverlose Aggressive">Neverlose Aggressive (Jitter + DT)</option>
+                            <option value="Scout Tap God">Scout Tap God (Jump Scout Headshot)</option>
+                            <option value="Legit (Irony)">Legit (Irony - No Rage)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Scripts -->
+    <script src="js/audio.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/textures.js"></script>
+    <script src="js/weapons.js"></script>
+    <script src="js/player.js"></script>
+    <script src="js/resolver.js"></script>
+    <script src="js/ragebot.js"></script>
+    <script src="js/visuals.js"></script>
+    <script src="js/map.js"></script>
+    <script src="js/bot.js"></script>
+    <script src="js/network.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>
