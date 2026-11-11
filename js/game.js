@@ -101,6 +101,13 @@ class HvHGame {
 
     _setupInputs() {
         window.addEventListener('keydown', (e) => {
+            // Any key on the start screen launches the game immediately!
+            const overlay = document.getElementById('click-to-play');
+            if (overlay && overlay.style.display !== 'none' && !this.isMenuOpen) {
+                this.startGame();
+                return;
+            }
+
             this.keys[e.code] = true;
 
             // Toggle Cheat Menu with INSERT or DELETE or M
@@ -635,6 +642,15 @@ class HvHGame {
 }
 
 // Global Startup
-window.addEventListener('DOMContentLoaded', () => {
-    window.game = new HvHGame();
-});
+function initHvHGame() {
+    if (!window.game) {
+        window.game = new HvHGame();
+    }
+}
+
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    initHvHGame();
+} else {
+    document.addEventListener('DOMContentLoaded', initHvHGame);
+    window.addEventListener('load', initHvHGame);
+}

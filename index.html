@@ -59,17 +59,34 @@
     <button id="open-menu-hud-btn">⚙️ HVH MENU [INSERT]</button>
 
     <!-- Start / Click to Play Screen -->
-    <div id="click-to-play" onclick="if(window.game) window.game.startGame(); else this.style.display='none';">
+    <div id="click-to-play" onclick="forceStartHvHGame()">
         <div class="play-title">HVH ARENA</div>
         <div class="play-sub">NO INTEGRITY: HACKS ARE THE GAME MECHANIC</div>
-        <div class="play-btn" onclick="if(window.game) window.game.startGame(); else document.getElementById('click-to-play').style.display='none';">CLICK TO PLAY</div>
+        <div class="play-btn" onclick="forceStartHvHGame()">НАЖМИТЕ СЮДА ИЛИ НАЖМИТЕ ЛЮБУЮ КЛАВИШУ (ПРОБЕЛ / ENTER)</div>
         <div class="play-hints">
+            <b>Для старта:</b> Нажмите любую кнопку на клавиатуре (ПРОБЕЛ, ENTER, W, A, S, D)<br>
             <b>Управление:</b> WASD — Движение | ПРОБЕЛ (зажать) — Авто-Баннихоп | Клик мыши — Стрельба<br>
             <b>[INSERT] / [DEL] / [M]</b> — Открыть Меню Чита (Ragebot, Anti-Aim, Chams, ESP, Лобби)<br>
             <b>1-5</b> — Выбор Оружия (1: SCAR-20 Auto, 2: Scout, 3: AWP, 4: Deagle, 5: Dualies)<br>
             <b>ПКМ / [E]</b> — Прицел Снайперки | <b>[R]</b> — Перезарядка
         </div>
     </div>
+    <script>
+        function forceStartHvHGame() {
+            var overlay = document.getElementById('click-to-play');
+            if (overlay) overlay.style.display = 'none';
+            if (window.soundFX) window.soundFX.init();
+            if (window.game) {
+                window.game.startGame();
+            }
+        }
+        window.addEventListener('keydown', function(e) {
+            var overlay = document.getElementById('click-to-play');
+            if (overlay && overlay.style.display !== 'none') {
+                forceStartHvHGame();
+            }
+        });
+    </script>
 
     <!-- THE CHEAT MENU (SKEET / GAMESENSE RECREATION) -->
     <div id="cheat-menu">
