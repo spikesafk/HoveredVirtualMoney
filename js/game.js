@@ -19,6 +19,7 @@ class HvHGame {
         this.keys = {};
         this.mouse = { x: 0, y: 0, isLocked: false, leftDown: false, rightDown: false };
         this.isMenuOpen = false;
+        this.gameStarted = false;
 
         // Loop timing & FPS
         this.lastTime = performance.now() / 1000;
@@ -133,17 +134,31 @@ class HvHGame {
         });
 
         // Mouse look via PointerLock
+        const overlay = document.getElementById('click-to-play');
+        const playBtn = document.querySelector('.play-btn');
+
+        if (overlay) {
+            overlay.addEventListener('click', (e) => {
+                this.startGame();
+            });
+        }
+        if (playBtn) {
+            playBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.startGame();
+            });
+        }
+
         this.renderer.domElement.addEventListener('click', () => {
             if (!this.mouse.isLocked && !this.isMenuOpen) {
-                this.renderer.domElement.requestPointerLock();
+                this.startGame();
             }
         });
 
         document.addEventListener('pointerlockchange', () => {
             this.mouse.isLocked = (document.pointerLockElement === this.renderer.domElement);
-            const overlay = document.getElementById('click-to-play');
-            if (overlay) {
-                overlay.style.display = (this.mouse.isLocked || this.isMenuOpen) ? 'none' : 'flex';
+            if (overlay && !this.mouse.isLocked && !this.isMenuOpen && !this.gameStarted) {
+                overlay.style.display = 'flex';
             }
         });
 
@@ -178,15 +193,32 @@ class HvHGame {
         window.addEventListener('contextmenu', (e) => e.preventDefault());
     }
 
+    startGame() {
+        this.gameStarted = true;
+        if (window.soundFX) window.soundFX.init();
+        try {
+            this.renderer.domElement.requestPointerLock();
+        } catch (err) {
+            console.warn("Pointer lock request:", err);
+        }
+        const overlay = document.getElementById('click-to-play');
+        if (overlay) overlay.style.display = 'none';
+        this.mouse.isLocked = true;
+    }
+
     toggleMenu(forceState) {
         this.isMenuOpen = (forceState !== undefined) ? forceState : !this.isMenuOpen;
         const menu = document.getElementById('cheat-menu');
+        const overlay = document.getElementById('click-to-play');
         if (menu) {
             menu.style.display = this.isMenuOpen ? 'flex' : 'none';
         }
 
-        if (this.isMenuOpen && document.pointerLockElement) {
-            document.exitPointerLock();
+        if (this.isMenuOpen) {
+            if (overlay) overlay.style.display = 'none';
+            if (document.pointerLockElement) {
+                document.exitPointerLock();
+            }
         }
     }
 

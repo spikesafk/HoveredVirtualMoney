@@ -59,10 +59,10 @@
     <button id="open-menu-hud-btn">⚙️ HVH MENU [INSERT]</button>
 
     <!-- Start / Click to Play Screen -->
-    <div id="click-to-play">
+    <div id="click-to-play" onclick="if(window.game) window.game.startGame(); else this.style.display='none';">
         <div class="play-title">HVH ARENA</div>
         <div class="play-sub">NO INTEGRITY: HACKS ARE THE GAME MECHANIC</div>
-        <div class="play-btn">CLICK TO PLAY</div>
+        <div class="play-btn" onclick="if(window.game) window.game.startGame(); else document.getElementById('click-to-play').style.display='none';">CLICK TO PLAY</div>
         <div class="play-hints">
             <b>Управление:</b> WASD — Движение | ПРОБЕЛ (зажать) — Авто-Баннихоп | Клик мыши — Стрельба<br>
             <b>[INSERT] / [DEL] / [M]</b> — Открыть Меню Чита (Ragebot, Anti-Aim, Chams, ESP, Лобби)<br>

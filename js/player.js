@@ -22,6 +22,7 @@ class Player {
         this.viewPitch = 0; // Player's actual aim camera pitch
         this.renderYaw = 0; // Visual model yaw (modified by Anti-Aim)
         this.renderPitch = 0;
+        this.realPitch = 0;
         this.realYaw = 0;   // Authoritative real hitbox angle
         this.fakeYaw = 0;   // Desync fake angle seen by enemies
         this.lby = 0;       // Lower Body Yaw
