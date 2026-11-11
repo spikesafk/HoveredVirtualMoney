@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>HVH ARENA: NO INTEGRITY (CS:GO HvH Simulator)</title>
+    <title>HVH ARENA // CS:GO HvH Simulator (de_mirage)</title>
     <link rel="stylesheet" href="style.css">
     <!-- Three.js 3D Engine -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <!-- PeerJS for 100% Free WebRTC Multiplayer on GitHub Pages -->
     <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 </head>
-<body>
+<body class="theme-skeet">
     <!-- 3D Three.js Viewport -->
     <div id="canvas-container"></div>
 
@@ -33,65 +33,284 @@
         <div class="scope-hair-h"></div>
     </div>
 
-    <!-- Watermark -->
-    <div id="watermark">gamesense | fps: 144 | ping: 0ms | tick: 64</div>
+    <!-- In-Game Watermark -->
+    <div id="watermark">gamesense | map: de_mirage | fps: 144 | ping: 0ms | tick: 64</div>
 
     <!-- Hitlogs / Event Console -->
     <div id="event-logs"></div>
 
     <!-- HUD Bar (Health, Weapon, Ammo) -->
-    <div id="hud-bottom">
+    <div id="hud-bottom" style="display: none;">
         <div class="hud-card">
             <div class="hud-label">+ HEALTH</div>
             <div id="hud-hp" class="hud-value hud-hp-val">100</div>
         </div>
         <div class="hud-card">
             <div class="hud-label">EQUIPPED WEAPON</div>
-            <div id="hud-weapon" class="hud-value" style="font-size: 18px; margin-top: 4px;">SCAR-20 Auto</div>
+            <div id="hud-weapon" class="hud-value" style="font-size: 18px; margin-top: 4px;">SSG 08 (Scout)</div>
         </div>
         <div class="hud-card">
             <div class="hud-label">AMMO</div>
-            <div id="hud-ammo" class="hud-value">20 / 20</div>
+            <div id="hud-ammo" class="hud-value">10 / 10</div>
         </div>
     </div>
 
-    <!-- HUD Button to open Cheat Menu -->
-    <button id="open-menu-hud-btn">⚙️ HVH MENU [INSERT]</button>
+    <!-- Action Bar (Open Menu & Main Menu Return) -->
+    <div id="hud-action-bar" style="display: none;">
+        <button id="open-menu-hud-btn" class="hud-btn">⚙️ HVH MENU [INSERT]</button>
+        <button id="btn-return-main-menu" class="hud-btn" style="border-color: #8b949e; color: #c9d1d9;">🏠 MAIN MENU</button>
+    </div>
 
-    <!-- Start / Click to Play Screen -->
-    <div id="click-to-play" onclick="forceStartHvHGame()">
-        <div class="play-title">HVH ARENA</div>
-        <div class="play-sub">NO INTEGRITY: HACKS ARE THE GAME MECHANIC</div>
-        <div class="play-btn" onclick="forceStartHvHGame()">НАЖМИТЕ СЮДА ИЛИ НАЖМИТЕ ЛЮБУЮ КЛАВИШУ (ПРОБЕЛ / ENTER)</div>
-        <div class="play-hints">
-            <b>Для старта:</b> Нажмите любую кнопку на клавиатуре (ПРОБЕЛ, ENTER, W, A, S, D)<br>
-            <b>Управление:</b> WASD — Движение | ПРОБЕЛ (зажать) — Авто-Баннихоп | Клик мыши — Стрельба<br>
-            <b>[INSERT] / [DEL] / [M]</b> — Открыть Меню Чита (Ragebot, Anti-Aim, Chams, ESP, Лобби)<br>
-            <b>1-5</b> — Выбор Оружия (1: SCAR-20 Auto, 2: Scout, 3: AWP, 4: Deagle, 5: Dualies)<br>
-            <b>ПКМ / [E]</b> — Прицел Снайперки | <b>[R]</b> — Перезарядка
+    <!-- ========================================================== -->
+    <!-- MAIN MENU OVERLAY                                          -->
+    <!-- ========================================================== -->
+    <div id="main-menu">
+        <div class="menu-topbar">
+            <div>
+                <span class="menu-logo-text">HVH ARENA</span>
+                <span class="menu-logo-sub"> // CS:GO NO INTEGRITY</span>
+            </div>
+            <div class="profile-bar">
+                <div class="avatar-img" id="profile-avatar-display">👑</div>
+                <div class="profile-info">
+                    <input type="text" id="profile-nick-input" class="nick-input" value="HvH_God_2018" title="Click to edit nickname">
+                    <span class="rank-badge">GLOBAL ELITE // SUB: LIFETIME</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-main-body">
+            <!-- Sidebar Navigation -->
+            <div class="nav-sidebar">
+                <div class="nav-item active" data-view="play">🎮 Play (Играть)</div>
+                <div class="nav-item" data-view="skins">🎨 Skins & Knives</div>
+                <div class="nav-item" data-view="themes">💎 Cheat Theme</div>
+            </div>
+
+            <!-- VIEW 1: PLAY (GAME MODES) -->
+            <div id="view-play" class="menu-view active">
+                <div class="play-modes-grid">
+                    <!-- Practice with Bots -->
+                    <div class="mode-card">
+                        <div class="card-title">🤖 Игра с ботами (Practice)</div>
+                        <p style="font-size: 13px; color: #8b949e; line-height: 1.5;">
+                            Тренировочный режим на карте <b>de_mirage (A Site)</b>. Боты используют полноценный спинбот, десинк-углы, автостоп и скаутинг.
+                        </p>
+                        <div class="cfg-row">
+                            <span>Карта:</span>
+                            <span style="color: #00d0ff; font-weight: bold; font-family: monospace;">de_mirage (A Site)</span>
+                        </div>
+                        <div class="cfg-row cfg-slider-row">
+                            <div class="cfg-slider-header">
+                                <span>Количество ботов:</span>
+                                <span id="val-practice-bots" class="cfg-val-badge">3</span>
+                            </div>
+                            <input type="range" id="practice-bot-count" min="0" max="6" value="3" oninput="document.getElementById('val-practice-bots').innerText=this.value;">
+                        </div>
+                        <div class="cfg-row">
+                            <span>Конфиг ботов:</span>
+                            <select id="practice-bot-preset">
+                                <option value="Scout Tap God">Scout Tap God (SSG 08 Jump Headshots)</option>
+                                <option value="Skeet 2018 HvH">Skeet 2018 HvH (Backward AA + Auto)</option>
+                                <option value="Neverlose Aggressive">Neverlose Aggressive (Jitter AA + DT)</option>
+                            </select>
+                        </div>
+                        <button id="btn-start-practice" class="btn-action btn-primary" style="padding: 14px; font-size: 15px; margin-top: auto;">
+                            ▶ НАЧАТЬ ИГРУ (START PRACTICE)
+                        </button>
+                    </div>
+
+                    <!-- Online Multiplayer -->
+                    <div class="mode-card">
+                        <div class="card-title">🌐 Сетевая игра (Online WebRTC)</div>
+                        <p style="font-size: 12px; color: #8b949e; line-height: 1.4;">
+                            Бесплатный P2P мультиплеер прямо в браузере. Подключайтесь к комнатам или создайте свою с паролем!
+                        </p>
+
+                        <!-- Room Browser -->
+                        <div class="room-list-header">
+                            <span style="font-size: 12px; font-weight: bold; color: #a4d037;">СПИСОК КОМНАТ:</span>
+                        </div>
+                        <div class="room-table">
+                            <div class="room-row">
+                                <div>
+                                    <div class="room-name-cell">🔴 [EU] SKEET 2018 HVH // MIRAGE A</div>
+                                    <div class="room-tag">Map: de_mirage | 3/8 Players | Ping: 18ms</div>
+                                </div>
+                                <button class="btn-action" onclick="window.game.network.joinRoom('mirage-hvh-1', '', () => window.game.startOnlineMatch('mirage-hvh-1'))">JOIN</button>
+                            </div>
+                            <div class="room-row">
+                                <div>
+                                    <div class="room-name-cell">🟡 [RU] SCOUT TAP GODS (100% JUMP)</div>
+                                    <div class="room-tag">Map: de_mirage | 2/4 Players | Ping: 12ms</div>
+                                </div>
+                                <button class="btn-action" onclick="window.game.network.joinRoom('scout-gods-ru', '', () => window.game.startOnlineMatch('scout-gods-ru'))">JOIN</button>
+                            </div>
+                        </div>
+
+                        <!-- Create Room Inputs -->
+                        <div style="background: rgba(0,0,0,0.25); padding: 12px; border-radius: 4px; border: 1px solid #232c37; margin-top: 10px;">
+                            <div style="font-size: 12px; font-weight: bold; color: #00d0ff; margin-bottom: 8px;">+ СОЗДАТЬ СВОЮ КОМНАТУ:</div>
+                            <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                                <input type="text" id="create-room-name" placeholder="Название комнаты" style="flex: 1; background: #0f141c; border: 1px solid #2b3747; color: #fff; padding: 6px 10px; border-radius: 3px; font-size: 12px;" value="Mirage HvH Duel">
+                                <select id="create-room-max-select">
+                                    <option value="2">2 Players (1v1)</option>
+                                    <option value="4">4 Players (2v2)</option>
+                                    <option value="8" selected>8 Players</option>
+                                </select>
+                            </div>
+                            <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 10px; font-size: 12px;">
+                                <label><input type="checkbox" id="create-room-pass-check"> Пароль:</label>
+                                <input type="password" id="create-room-pass-input" placeholder="Код для входа (опц.)" style="background: #0f141c; border: 1px solid #2b3747; color: #fff; padding: 4px 8px; border-radius: 3px; font-size: 12px; width: 140px;">
+                            </div>
+                            <button id="btn-modal-create-room" class="btn-action btn-primary" style="width: 100%;">+ СОЗДАТЬ И ВОЙТИ</button>
+                        </div>
+
+                        <!-- Direct Join -->
+                        <div style="display: flex; gap: 8px; margin-top: 8px;">
+                            <input type="text" id="direct-room-code" placeholder="Код комнаты (e.g. hvh-4821)" style="flex: 1; background: #0f141c; border: 1px solid #2b3747; color: #fff; padding: 6px 10px; border-radius: 3px; font-size: 12px;">
+                            <input type="password" id="direct-room-pass" placeholder="Пароль" style="width: 90px; background: #0f141c; border: 1px solid #2b3747; color: #fff; padding: 6px 8px; border-radius: 3px; font-size: 12px;">
+                            <button id="btn-direct-join" class="btn-action">ВОЙТИ</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW 2: SKINS & KNIVES (SKINCHANGER) -->
+            <div id="view-skins" class="menu-view">
+                <div class="skin-tabs">
+                    <button class="skin-tab-btn active" data-cat="scout">SSG 08 (Scout)</button>
+                    <button class="skin-tab-btn" data-cat="scar20">SCAR-20 Auto</button>
+                    <button class="skin-tab-btn" data-cat="awp">AWP</button>
+                    <button class="skin-tab-btn" data-cat="deagle">Desert Eagle</button>
+                    <button class="skin-tab-btn" data-cat="knife">Knives (Ножи)</button>
+                </div>
+
+                <!-- SSG 08 Category -->
+                <div id="skin-cat-scout" class="skin-grid skin-category-panel">
+                    <div class="skin-card rarity-covert equipped" data-weapon="scout" data-skin="dragonfire">
+                        <div class="skin-thumb" style="background: linear-gradient(135deg, #ff1100, #ffbb00);">🔥</div>
+                        <div class="skin-name">Dragonfire</div>
+                        <div class="skin-weapon-label">SSG 08 // Covert</div>
+                    </div>
+                    <div class="skin-card rarity-classified" data-weapon="scout" data-skin="default">
+                        <div class="skin-thumb" style="background: #1e252e;">🎯</div>
+                        <div class="skin-name">Default Tactical</div>
+                        <div class="skin-weapon-label">SSG 08 // Standard</div>
+                    </div>
+                </div>
+
+                <!-- SCAR-20 Category -->
+                <div id="skin-cat-scar20" class="skin-grid skin-category-panel" style="display: none;">
+                    <div class="skin-card rarity-covert equipped" data-weapon="scar20" data-skin="bloodsport">
+                        <div class="skin-thumb" style="background: linear-gradient(135deg, #b30000, #ffffff);">⚡</div>
+                        <div class="skin-name">Bloodsport</div>
+                        <div class="skin-weapon-label">SCAR-20 // Covert</div>
+                    </div>
+                    <div class="skin-card rarity-classified" data-weapon="scar20" data-skin="default">
+                        <div class="skin-thumb" style="background: #1e252e;">🔫</div>
+                        <div class="skin-name">Default Military</div>
+                        <div class="skin-weapon-label">SCAR-20 // Standard</div>
+                    </div>
+                </div>
+
+                <!-- AWP Category -->
+                <div id="skin-cat-awp" class="skin-grid skin-category-panel" style="display: none;">
+                    <div class="skin-card rarity-covert equipped" data-weapon="awp" data-skin="dragonlore">
+                        <div class="skin-thumb" style="background: linear-gradient(135deg, #f5c542, #1b4332);">🐉</div>
+                        <div class="skin-name">Dragon Lore</div>
+                        <div class="skin-weapon-label">AWP // Souvenir</div>
+                    </div>
+                    <div class="skin-card rarity-classified" data-weapon="awp" data-skin="asiimov">
+                        <div class="skin-thumb" style="background: linear-gradient(135deg, #ffffff, #ff6600);">📐</div>
+                        <div class="skin-name">Asiimov</div>
+                        <div class="skin-weapon-label">AWP // Classified</div>
+                    </div>
+                    <div class="skin-card rarity-covert" data-weapon="awp" data-skin="fade">
+                        <div class="skin-thumb" style="background: linear-gradient(135deg, #7b2cbf, #ffb703);">🌈</div>
+                        <div class="skin-name">Fade 100%</div>
+                        <div class="skin-weapon-label">AWP // Covert</div>
+                    </div>
+                </div>
+
+                <!-- Deagle Category -->
+                <div id="skin-cat-deagle" class="skin-grid skin-category-panel" style="display: none;">
+                    <div class="skin-card rarity-classified equipped" data-weapon="deagle" data-skin="printstream">
+                        <div class="skin-thumb" style="background: linear-gradient(135deg, #f0f4f8, #00ffcc);">💎</div>
+                        <div class="skin-name">Printstream</div>
+                        <div class="skin-weapon-label">Desert Eagle // Classified</div>
+                    </div>
+                    <div class="skin-card rarity-covert" data-weapon="deagle" data-skin="default">
+                        <div class="skin-thumb" style="background: #1e252e;">🦅</div>
+                        <div class="skin-name">Default Steel</div>
+                        <div class="skin-weapon-label">Desert Eagle // Standard</div>
+                    </div>
+                </div>
+
+                <!-- Knives Category -->
+                <div id="skin-cat-knife" class="skin-grid skin-category-panel" style="display: none;">
+                    <div class="skin-card rarity-knife equipped" data-weapon="knife" data-skin="doppler_ruby">
+                        <div class="skin-thumb" style="background: linear-gradient(135deg, #ff1a40, #3b0008);">🗡️</div>
+                        <div class="skin-name">Karambit Doppler (Ruby)</div>
+                        <div class="skin-weapon-label">★ Rare Special Item</div>
+                    </div>
+                    <div class="skin-card rarity-knife" data-weapon="knife" data-skin="doppler_sapphire">
+                        <div class="skin-thumb" style="background: linear-gradient(135deg, #00d4ff, #00083b);">🗡️</div>
+                        <div class="skin-name">Karambit Doppler (Sapphire)</div>
+                        <div class="skin-weapon-label">★ Rare Special Item</div>
+                    </div>
+                    <div class="skin-card rarity-knife" data-weapon="knife" data-skin="fade">
+                        <div class="skin-thumb" style="background: linear-gradient(135deg, #7b2cbf, #fb8500);">🗡️</div>
+                        <div class="skin-name">Karambit Fade</div>
+                        <div class="skin-weapon-label">★ Rare Special Item</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW 3: CHEAT THEME SELECTOR -->
+            <div id="view-themes" class="menu-view">
+                <div class="card-title">💎 Выбор дизайна Чит-Меню (Styles)</div>
+                <p style="font-size: 13px; color: #8b949e; line-height: 1.5;">
+                    Выберите внешний вид чита, вдохновлённый популярными HvH читами:
+                </p>
+                <div class="theme-selector-grid">
+                    <div class="theme-card active" onclick="window.game.setCheatTheme('skeet')">
+                        <div class="theme-swatch" style="background: linear-gradient(90deg, #111417, #a4d037);"></div>
+                        <div style="font-weight: bold; color: #a4d037;">Skeet / Gamesense</div>
+                        <div style="font-size: 11px; color: #8b949e;">Темный антрацит и фирменный салатовый акцент #a4d037</div>
+                    </div>
+                    <div class="theme-card" onclick="window.game.setCheatTheme('neverlose')">
+                        <div class="theme-swatch" style="background: linear-gradient(90deg, #090e17, #00e5ff);"></div>
+                        <div style="font-weight: bold; color: #00e5ff;">Neverlose.cc</div>
+                        <div style="font-size: 11px; color: #8b949e;">Глубокий синий космос и неоновый циан #00e5ff</div>
+                    </div>
+                    <div class="theme-card" onclick="window.game.setCheatTheme('nixware')">
+                        <div class="theme-swatch" style="background: linear-gradient(90deg, #110d1a, #b366ff);"></div>
+                        <div style="font-weight: bold; color: #b366ff;">Nixware.cc</div>
+                        <div style="font-size: 11px; color: #8b949e;">Фиолетовый стиль и компактные виджеты</div>
+                    </div>
+                    <div class="theme-card" onclick="window.game.setCheatTheme('onetap')">
+                        <div class="theme-swatch" style="background: linear-gradient(90deg, #141414, #ff9900);"></div>
+                        <div style="font-weight: bold; color: #ff9900;">Onetap v3</div>
+                        <div style="font-size: 11px; color: #8b949e;">Оранжевый легендарный OT v3 дизайн</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    <script>
-        function forceStartHvHGame() {
-            var overlay = document.getElementById('click-to-play');
-            if (overlay) overlay.style.display = 'none';
-            if (window.soundFX) window.soundFX.init();
-            if (window.game) {
-                window.game.startGame();
-            }
-        }
-        window.addEventListener('keydown', function(e) {
-            var overlay = document.getElementById('click-to-play');
-            if (overlay && overlay.style.display !== 'none') {
-                forceStartHvHGame();
-            }
-        });
-    </script>
 
-    <!-- THE CHEAT MENU (SKEET / GAMESENSE RECREATION) -->
+    <!-- ========================================================== -->
+    <!-- THE IN-GAME CHEAT MENU (PRESS INSERT)                      -->
+    <!-- ========================================================== -->
     <div id="cheat-menu">
         <div class="menu-header">
-            <span class="menu-title">[ gamesense.pub ] - HvH Core Engine v2.4</span>
+            <span class="menu-title">[ gamesense.pub ] - HvH Core Engine v2.5</span>
+            <div class="theme-pills">
+                <button class="theme-pill-btn active" data-theme="skeet">SKEET</button>
+                <button class="theme-pill-btn" data-theme="neverlose">NEVERLOSE</button>
+                <button class="theme-pill-btn" data-theme="nixware">NIXWARE</button>
+                <button class="theme-pill-btn" data-theme="onetap">ONETAP</button>
+            </div>
             <button id="close-menu-btn" class="menu-close">&times;</button>
         </div>
 
@@ -101,8 +320,7 @@
                 <div class="menu-tab active" data-tab="ragebot">🎯 Ragebot</div>
                 <div class="menu-tab" data-tab="antiaim">🔄 Anti-Aim</div>
                 <div class="menu-tab" data-tab="visuals">👁️ Visuals & ESP</div>
-                <div class="menu-tab" data-tab="misc">⚡ Misc & Guns</div>
-                <div class="menu-tab" data-tab="multiplayer">🌐 Multiplayer</div>
+                <div class="menu-tab" data-tab="misc">⚡ Misc & Bhop</div>
                 <div class="menu-tab" data-tab="configs">💾 Configs</div>
             </div>
 
@@ -172,15 +390,6 @@
                             <span>HvH Resolver (Anti-Desync)</span>
                             <input type="checkbox" id="cfg-rage-resolver" checked>
                         </div>
-                        <div class="cfg-box-title" style="margin-top: 10px;">Hitboxes</div>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; font-size: 12px;">
-                            <label><input type="checkbox" id="cfg-hb-head" checked> Head</label>
-                            <label><input type="checkbox" id="cfg-hb-chest" checked> Chest</label>
-                            <label><input type="checkbox" id="cfg-hb-stomach" checked> Stomach</label>
-                            <label><input type="checkbox" id="cfg-hb-pelvis" checked> Pelvis</label>
-                            <label><input type="checkbox" id="cfg-hb-arms"> Arms</label>
-                            <label><input type="checkbox" id="cfg-hb-legs"> Legs</label>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -241,13 +450,6 @@
                             <span>Fake Lag (Choke Packets)</span>
                             <input type="checkbox" id="cfg-aa-fakelag" checked>
                         </div>
-                        <div class="cfg-row cfg-slider-row">
-                            <div class="cfg-slider-header">
-                                <span>Choke Ticks (1-14)</span>
-                                <span id="val-aa-choke" class="cfg-val-badge">8</span>
-                            </div>
-                            <input type="range" id="cfg-aa-choke" min="1" max="14" value="8">
-                        </div>
                     </div>
                 </div>
             </div>
@@ -270,15 +472,11 @@
                             <input type="checkbox" id="cfg-esp-name" checked>
                         </div>
                         <div class="cfg-row">
-                            <span>Health Bar (Dynamic Color)</span>
+                            <span>Health Bar</span>
                             <input type="checkbox" id="cfg-esp-health" checked>
                         </div>
                         <div class="cfg-row">
-                            <span>Weapon Text</span>
-                            <input type="checkbox" id="cfg-esp-weapon" checked>
-                        </div>
-                        <div class="cfg-row">
-                            <span>Skeleton ESP (Bone lines)</span>
+                            <span>Skeleton ESP</span>
                             <input type="checkbox" id="cfg-esp-skeleton" checked>
                         </div>
                         <div class="cfg-row">
@@ -297,13 +495,6 @@
                             <span>Thirdperson Mode</span>
                             <input type="checkbox" id="cfg-esp-thirdperson" checked>
                         </div>
-                        <div class="cfg-row cfg-slider-row">
-                            <div class="cfg-slider-header">
-                                <span>Thirdperson Distance</span>
-                                <span id="val-esp-tpdist" class="cfg-val-badge">180</span>
-                            </div>
-                            <input type="range" id="cfg-esp-tpdist" min="100" max="300" value="180">
-                        </div>
                         <div class="cfg-row">
                             <span>Show Fake Desync Ghost</span>
                             <input type="checkbox" id="cfg-esp-fakeghost" checked>
@@ -312,7 +503,7 @@
                 </div>
             </div>
 
-            <!-- TAB 4: MISC & GUNS -->
+            <!-- TAB 4: MISC & BHOP -->
             <div id="tab-misc" class="tab-content">
                 <div class="cfg-grid">
                     <div class="cfg-box">
@@ -333,77 +524,19 @@
                             <input type="range" id="cfg-misc-fov" min="60" max="120" value="95">
                         </div>
                     </div>
-
-                    <div class="cfg-box">
-                        <div class="cfg-box-title">Equip Weapon</div>
-                        <div class="weapon-grid">
-                            <button class="btn-action btn-weapon-select" data-weapon="scar20">SCAR-20 (Auto)</button>
-                            <button class="btn-action btn-weapon-select" data-weapon="scout">SSG-08 (Scout)</button>
-                            <button class="btn-action btn-weapon-select" data-weapon="awp">AWP Magnum</button>
-                            <button class="btn-action btn-weapon-select" data-weapon="deagle">Desert Eagle</button>
-                            <button class="btn-action btn-weapon-select" data-weapon="duals">Dual Berettas</button>
-                        </div>
-                    </div>
                 </div>
             </div>
 
-            <!-- TAB 5: MULTIPLAYER & BOTS -->
-            <div id="tab-multiplayer" class="tab-content">
-                <div class="cfg-grid">
-                    <div class="cfg-box">
-                        <div class="cfg-box-title">Play With Friends (GitHub Pages WebRTC)</div>
-                        <p style="font-size: 12px; color: #8b949e; margin-bottom: 12px; line-height: 1.4;">
-                            Работает прямо через браузер без сторонних серверов! Создайте комнату и отправьте ссылку другу.
-                        </p>
-                        <button id="btn-create-lobby" class="btn-action btn-primary" style="width: 100%; margin-bottom: 12px;">+ CREATE MULTIPLAYER LOBBY</button>
-
-                        <div class="cfg-row" style="margin-top: 10px;">
-                            <span>Join by Room Code:</span>
-                        </div>
-                        <div class="lobby-input-row">
-                            <input type="text" id="room-code-input" placeholder="e.g. hvh-4821">
-                            <button id="btn-join-lobby" class="btn-action">JOIN</button>
-                        </div>
-
-                        <div id="lobby-share-box" class="lobby-box" style="display: none;">
-                            <div style="font-size: 11px; color: #a4d037; font-weight: bold;">SHAREABLE INVITE LINK:</div>
-                            <div class="lobby-input-row">
-                                <input type="text" id="share-link-input" readonly>
-                                <button id="btn-copy-link" class="btn-action">Copy Link</button>
-                            </div>
-                        </div>
-
-                        <div id="room-status-text" style="margin-top: 12px; font-size: 12px; font-family: monospace; color: #00e5ff;">
-                            Status: Offline / Local Mode
-                        </div>
-                    </div>
-
-                    <div class="cfg-box">
-                        <div class="cfg-box-title">HvH Practice Bots</div>
-                        <p style="font-size: 12px; color: #8b949e; margin-bottom: 12px; line-height: 1.4;">
-                            Боты используют спинбот, десинк, автостоп, скаутинг и резорвер.
-                        </p>
-                        <div class="cfg-row cfg-slider-row">
-                            <div class="cfg-slider-header">
-                                <span>Active Bot Count</span>
-                                <span id="bot-count-val" class="cfg-val-badge">3</span>
-                            </div>
-                            <input type="range" id="bot-count-slider" min="0" max="4" value="3">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB 6: CONFIGS -->
+            <!-- TAB 5: CONFIGS -->
             <div id="tab-configs" class="tab-content">
                 <div class="cfg-box">
                     <div class="cfg-box-title">Preset Configs</div>
                     <div class="cfg-row">
                         <span>Select Preset:</span>
                         <select id="preset-select" style="width: 220px;">
+                            <option value="Scout Tap God">Scout Tap God (SSG 08 Jump Aim)</option>
                             <option value="Skeet 2018 HvH">Skeet 2018 HvH (Backward AA + SCAR-20)</option>
                             <option value="Neverlose Aggressive">Neverlose Aggressive (Jitter + DT)</option>
-                            <option value="Scout Tap God">Scout Tap God (Jump Scout Headshot)</option>
                             <option value="Legit (Irony)">Legit (Irony - No Rage)</option>
                         </select>
                     </div>
@@ -416,7 +549,9 @@
     <script src="js/audio.js"></script>
     <script src="js/config.js"></script>
     <script src="js/textures.js"></script>
+    <script src="js/skins.js"></script>
     <script src="js/weapons.js"></script>
+    <script src="js/viewmodel.js"></script>
     <script src="js/player.js"></script>
     <script src="js/resolver.js"></script>
     <script src="js/ragebot.js"></script>

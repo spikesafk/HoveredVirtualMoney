@@ -1,4 +1,4 @@
-/* CS:GO HvH Arena: Authentic Gamesense / Neverlose Aesthetic */
+/* CS:GO HvH Arena - Multi-Theme & CS2 Style Main Menu */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -11,7 +11,7 @@ body, html {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background-color: #0b0e14;
+    background-color: #080b10;
     font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
     color: #e6edf3;
 }
@@ -91,7 +91,7 @@ body, html {
     background: radial-gradient(circle, transparent 38%, rgba(0,0,0,0.98) 72%);
 }
 
-/* Watermark (Top Right) */
+/* Watermark */
 #watermark {
     position: absolute;
     top: 14px;
@@ -99,8 +99,8 @@ body, html {
     padding: 6px 14px;
     background: rgba(13, 17, 23, 0.88);
     border: 1px solid #232c37;
-    border-top: 2px solid #a4d037;
-    font-family: 'Consolas', 'Courier New', monospace;
+    border-top: 2px solid var(--theme-accent, #a4d037);
+    font-family: 'Consolas', monospace;
     font-size: 13px;
     font-weight: bold;
     color: #e6edf3;
@@ -121,22 +121,22 @@ body, html {
     z-index: 10;
 }
 .log-entry {
-    font-family: 'Consolas', 'Courier New', monospace;
+    font-family: 'Consolas', monospace;
     font-size: 13px;
     font-weight: 600;
     text-shadow: 1px 1px 2px #000;
     background: rgba(13, 17, 23, 0.75);
     padding: 3px 8px;
-    border-left: 2px solid #a4d037;
+    border-left: 2px solid var(--theme-accent, #a4d037);
     border-radius: 2px;
     transition: opacity 1.5s ease;
 }
 .log-tag {
-    color: #a4d037;
+    color: var(--theme-accent, #a4d037);
     font-weight: bold;
 }
 
-/* HUD Info Bar (Bottom Left / Bottom Right) */
+/* HUD Info Bar */
 #hud-bottom {
     position: absolute;
     bottom: 20px;
@@ -170,115 +170,411 @@ body, html {
     color: #a4d037;
 }
 
-/* Floating Menu HUD Button */
-#open-menu-hud-btn {
+/* In-Game HUD Buttons */
+#hud-action-bar {
     position: absolute;
     bottom: 22px;
     left: 50%;
     transform: translateX(-50%);
+    display: flex;
+    gap: 12px;
+    z-index: 15;
+}
+.hud-btn {
     background: #161b22;
-    border: 1px solid #a4d037;
-    color: #a4d037;
+    border: 1px solid var(--theme-accent, #a4d037);
+    color: var(--theme-accent, #a4d037);
     padding: 8px 18px;
     font-family: 'Consolas', monospace;
     font-weight: bold;
     font-size: 13px;
     cursor: pointer;
     border-radius: 4px;
-    z-index: 15;
-    box-shadow: 0 0 10px rgba(164, 208, 55, 0.25);
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
     transition: all 0.2s ease;
 }
-#open-menu-hud-btn:hover {
-    background: #a4d037;
+.hud-btn:hover {
+    background: var(--theme-accent, #a4d037);
     color: #000;
 }
 
-/* Click to Play Overlay */
-#click-to-play {
+/* ========================================================== */
+/* MAIN MENU OVERLAY (CS2 / HvH Hub Style)                    */
+/* ========================================================== */
+#main-menu {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(11, 14, 20, 0.75);
+    background: rgba(10, 14, 20, 0.88);
+    backdrop-filter: blur(8px);
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    z-index: 20;
-    backdrop-filter: blur(4px);
-}
-.play-title {
-    font-size: 42px;
-    font-weight: 900;
-    letter-spacing: 3px;
-    color: #ffffff;
-    margin-bottom: 8px;
-    text-shadow: 0 0 20px #a4d037;
-}
-.play-sub {
-    font-size: 16px;
-    color: #a4d037;
-    font-family: 'Consolas', monospace;
-    margin-bottom: 24px;
-}
-.play-btn {
-    padding: 14px 38px;
-    background: #a4d037;
-    color: #0d1117;
-    font-size: 18px;
-    font-weight: bold;
-    border-radius: 4px;
-    box-shadow: 0 0 25px rgba(164, 208, 55, 0.5);
-    transition: transform 0.15s ease;
-}
-.play-btn:hover {
-    transform: scale(1.05);
-}
-.play-hints {
-    margin-top: 25px;
-    font-size: 13px;
-    color: #8b949e;
-    text-align: center;
-    line-height: 1.8;
+    z-index: 40;
 }
 
-/* THE CHEAT MENU (SKEET / GAMESENSE RECREATION) */
+.menu-topbar {
+    height: 60px;
+    background: rgba(15, 20, 28, 0.95);
+    border-bottom: 1px solid #232c37;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 28px;
+}
+.menu-logo-text {
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    color: #ffffff;
+}
+.menu-logo-sub {
+    font-size: 13px;
+    color: var(--theme-accent, #a4d037);
+    font-family: 'Consolas', monospace;
+}
+
+.profile-bar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+.avatar-img {
+    width: 42px;
+    height: 42px;
+    border-radius: 4px;
+    border: 2px solid var(--theme-accent, #a4d037);
+    cursor: pointer;
+    background: #1a222d;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+}
+.profile-info {
+    display: flex;
+    flex-direction: column;
+}
+.nick-input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #364252;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: bold;
+    outline: none;
+    width: 140px;
+}
+.rank-badge {
+    font-size: 11px;
+    color: #8b949e;
+    font-family: 'Consolas', monospace;
+}
+
+.menu-main-body {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+}
+
+/* Main Navigation Sidebar */
+.nav-sidebar {
+    width: 220px;
+    background: rgba(13, 17, 23, 0.95);
+    border-right: 1px solid #232c37;
+    display: flex;
+    flex-direction: column;
+    padding: 18px 0;
+}
+.nav-item {
+    padding: 14px 24px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #8b949e;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.15s ease;
+}
+.nav-item:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.04);
+}
+.nav-item.active {
+    color: var(--theme-accent, #a4d037);
+    background: rgba(255, 255, 255, 0.06);
+    border-left: 4px solid var(--theme-accent, #a4d037);
+}
+
+/* Main Content Panels */
+.menu-view {
+    display: none;
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+}
+.menu-view.active {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Play Cards Grid */
+.play-modes-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 24px;
+}
+.mode-card {
+    background: #131922;
+    border: 1px solid #232c37;
+    border-radius: 6px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+.card-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid #232c37;
+    padding-bottom: 12px;
+}
+
+/* Room Browser */
+.room-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+.room-table {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 220px;
+    overflow-y: auto;
+}
+.room-row {
+    background: #18202b;
+    border: 1px solid #2a3544;
+    padding: 10px 14px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+}
+.room-row:hover {
+    border-color: var(--theme-accent, #a4d037);
+}
+.room-name-cell {
+    font-weight: bold;
+    color: #e6edf3;
+}
+.room-tag {
+    font-size: 11px;
+    color: #8b949e;
+    font-family: monospace;
+}
+
+/* Skinchanger Inventory Grid */
+.skin-tabs {
+    display: flex;
+    gap: 10px;
+    border-bottom: 1px solid #232c37;
+    padding-bottom: 12px;
+}
+.skin-tab-btn {
+    background: #18202b;
+    border: 1px solid #2b3747;
+    color: #8b949e;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.skin-tab-btn.active {
+    background: var(--theme-accent, #a4d037);
+    color: #000;
+}
+.skin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+}
+.skin-card {
+    background: #141b24;
+    border: 1px solid #253140;
+    border-radius: 6px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+.skin-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.5);
+}
+.skin-card.equipped {
+    border-color: var(--theme-accent, #a4d037);
+    box-shadow: 0 0 12px rgba(164, 208, 55, 0.3);
+}
+.skin-thumb {
+    width: 100%;
+    height: 90px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+.skin-name {
+    font-size: 13px;
+    font-weight: bold;
+    color: #ffffff;
+    text-align: center;
+}
+.skin-weapon-label {
+    font-size: 11px;
+    color: #8b949e;
+}
+.rarity-covert { border-bottom: 3px solid #eb4b4b; }
+.rarity-classified { border-bottom: 3px solid #d32ce6; }
+.rarity-knife { border-bottom: 3px solid #ffd700; }
+
+/* THEME SELECTOR CARDS */
+.theme-selector-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+.theme-card {
+    background: #141b24;
+    border: 2px solid #232c37;
+    border-radius: 6px;
+    padding: 16px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: all 0.2s ease;
+}
+.theme-card:hover {
+    transform: translateY(-2px);
+}
+.theme-card.active {
+    border-color: var(--theme-accent, #a4d037);
+}
+.theme-swatch {
+    height: 40px;
+    border-radius: 4px;
+}
+
+/* ========================================================== */
+/* CHEAT GUI THEMES                                           */
+/* ========================================================== */
+
+/* Theme 1: SKEET / GAMESENSE (Default) */
+.theme-skeet {
+    --theme-accent: #a4d037;
+    --theme-bg: #111417;
+    --theme-header: #15191e;
+    --theme-border: #28313d;
+}
+
+/* Theme 2: NEVERLOSE.CC */
+.theme-neverlose {
+    --theme-accent: #00e5ff;
+    --theme-bg: #090e17;
+    --theme-header: #0e1624;
+    --theme-border: #1a2a40;
+}
+
+/* Theme 3: NIXWARE */
+.theme-nixware {
+    --theme-accent: #b366ff;
+    --theme-bg: #110d1a;
+    --theme-header: #181324;
+    --theme-border: #32234a;
+}
+
+/* Theme 4: ONETAP V3 */
+.theme-onetap {
+    --theme-accent: #ff9900;
+    --theme-bg: #141414;
+    --theme-header: #1c1c1c;
+    --theme-border: #383838;
+}
+
+/* THE IN-GAME CHEAT MENU */
 #cheat-menu {
     display: none;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 780px;
-    height: 520px;
-    background: #111417;
-    border: 1px solid #28313d;
-    border-top: 3px solid #a4d037;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.85);
+    width: 820px;
+    height: 550px;
+    background: var(--theme-bg, #111417);
+    border: 1px solid var(--theme-border, #28313d);
+    border-top: 3px solid var(--theme-accent, #a4d037);
+    box-shadow: 0 10px 50px rgba(0,0,0,0.85);
     border-radius: 4px;
     flex-direction: column;
-    z-index: 30;
+    z-index: 50;
 }
 
 .menu-header {
-    height: 42px;
-    background: #15191e;
+    height: 44px;
+    background: var(--theme-header, #15191e);
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 16px;
-    border-bottom: 1px solid #232c37;
+    border-bottom: 1px solid var(--theme-border, #232c37);
 }
 .menu-title {
     font-family: 'Consolas', monospace;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: bold;
-    color: #a4d037;
+    color: var(--theme-accent, #a4d037);
     letter-spacing: 1px;
 }
+.theme-pills {
+    display: flex;
+    gap: 6px;
+}
+.theme-pill-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid #364252;
+    color: #8b949e;
+    font-size: 11px;
+    font-family: monospace;
+    padding: 3px 8px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+.theme-pill-btn.active {
+    border-color: var(--theme-accent, #a4d037);
+    color: var(--theme-accent, #a4d037);
+    background: rgba(255, 255, 255, 0.1);
+}
+
 .menu-close {
     background: none;
     border: none;
@@ -298,9 +594,9 @@ body, html {
 
 /* Tabs list */
 .menu-tabs {
-    width: 170px;
-    background: #13171c;
-    border-right: 1px solid #232c37;
+    width: 175px;
+    background: rgba(0, 0, 0, 0.2);
+    border-right: 1px solid var(--theme-border, #232c37);
     display: flex;
     flex-direction: column;
     padding: 10px 0;
@@ -318,12 +614,12 @@ body, html {
 }
 .menu-tab:hover {
     color: #ffffff;
-    background: #181d24;
+    background: rgba(255, 255, 255, 0.04);
 }
 .menu-tab.active {
-    color: #a4d037;
-    background: #1c222b;
-    border-left: 3px solid #a4d037;
+    color: var(--theme-accent, #a4d037);
+    background: rgba(255, 255, 255, 0.06);
+    border-left: 3px solid var(--theme-accent, #a4d037);
 }
 
 /* Tab content panes */
@@ -343,23 +639,22 @@ body, html {
     gap: 20px;
 }
 .cfg-box {
-    background: #151a21;
-    border: 1px solid #232c37;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--theme-border, #232c37);
     border-radius: 4px;
     padding: 16px;
 }
 .cfg-box-title {
     font-size: 13px;
     font-weight: bold;
-    color: #a4d037;
+    color: var(--theme-accent, #a4d037);
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    border-bottom: 1px solid #232c37;
+    border-bottom: 1px solid var(--theme-border, #232c37);
     padding-bottom: 8px;
     margin-bottom: 14px;
 }
 
-/* Config Row items */
 .cfg-row {
     display: flex;
     justify-content: space-between;
@@ -379,27 +674,23 @@ body, html {
     font-size: 13px;
 }
 .cfg-val-badge {
-    color: #a4d037;
+    color: var(--theme-accent, #a4d037);
     font-family: 'Consolas', monospace;
     font-weight: bold;
 }
 
-/* Custom Checkbox */
+/* Controls */
 input[type="checkbox"] {
-    accent-color: #a4d037;
+    accent-color: var(--theme-accent, #a4d037);
     width: 16px;
     height: 16px;
     cursor: pointer;
 }
-
-/* Custom Slider */
 input[type="range"] {
     width: 100%;
-    accent-color: #a4d037;
+    accent-color: var(--theme-accent, #a4d037);
     cursor: pointer;
 }
-
-/* Custom Select Dropdowns */
 select {
     background: #0f1317;
     border: 1px solid #2b3542;
@@ -409,58 +700,26 @@ select {
     font-size: 12px;
     cursor: pointer;
 }
-
-/* Buttons */
 .btn-action {
     background: #1d242e;
     border: 1px solid #364252;
     color: #e6edf3;
     padding: 8px 14px;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: bold;
     border-radius: 3px;
     cursor: pointer;
     transition: all 0.15s ease;
 }
 .btn-action:hover {
-    background: #a4d037;
+    background: var(--theme-accent, #a4d037);
     color: #000;
 }
 .btn-primary {
-    background: #a4d037;
+    background: var(--theme-accent, #a4d037);
     color: #000;
     border: none;
 }
 .btn-primary:hover {
-    background: #88cc00;
-}
-
-/* Weapon Bar in Misc */
-.weapon-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
-}
-
-/* Multiplayer Lobby Share Box */
-.lobby-box {
-    margin-top: 15px;
-    padding: 12px;
-    background: #0d1117;
-    border: 1px solid #232c37;
-    border-radius: 4px;
-}
-.lobby-input-row {
-    display: flex;
-    gap: 8px;
-    margin-top: 8px;
-}
-.lobby-input-row input {
-    flex: 1;
-    background: #161b22;
-    border: 1px solid #30363d;
-    color: #00e5ff;
-    padding: 6px 10px;
-    font-family: 'Consolas', monospace;
-    font-size: 12px;
+    filter: brightness(1.15);
 }

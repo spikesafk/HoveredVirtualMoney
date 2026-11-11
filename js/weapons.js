@@ -1,15 +1,32 @@
-// CS:GO HvH Weapons Database and Mechanics
+// CS:GO HvH Weapons Database (Default: SSG 08 Scout, Auto, AWP, Deagle, Duals & Knives)
 const WEAPONS = {
+    scout: {
+        id: 'scout',
+        name: 'SSG 08 (Scout)',
+        category: 'sniper',
+        damage: 88,
+        penetrationPower: 0.70,
+        fireRate: 1.25,
+        magSize: 10,
+        reloadTime: 2.8,
+        spread: 0.001,
+        inAirInaccuracy: 0.001, // Legendary CS:GO jump-scout: 100% accurate in mid-air!
+        headshotMultiplier: 4.0,
+        scopedFov: 32,
+        canDoubleTap: false,
+        soundType: 'scout',
+        recoil: 0.03
+    },
     scar20: {
         id: 'scar20',
-        name: 'SCAR-20 Auto',
-        type: 'sniper_auto',
+        name: 'SCAR-20 (Auto-Sniper)',
+        category: 'sniper',
         damage: 80,
-        penetrationPower: 0.85, // Penetrates wooden cover easily
-        fireRate: 0.24, // seconds between shots
+        penetrationPower: 0.85, // Wallbang machine
+        fireRate: 0.24,
         magSize: 20,
         reloadTime: 2.5,
-        spread: 0.002, // Very low spread scoped
+        spread: 0.002,
         inAirInaccuracy: 0.08,
         headshotMultiplier: 4.0,
         scopedFov: 35,
@@ -17,27 +34,10 @@ const WEAPONS = {
         soundType: 'scar20',
         recoil: 0.02
     },
-    scout: {
-        id: 'scout',
-        name: 'SSG 08 Scout',
-        type: 'sniper_bolt',
-        damage: 88,
-        penetrationPower: 0.65,
-        fireRate: 1.25,
-        magSize: 10,
-        reloadTime: 2.8,
-        spread: 0.001,
-        inAirInaccuracy: 0.001, // Legendary CS:GO jump-scout feature: 100% accurate in mid-air!
-        headshotMultiplier: 4.0,
-        scopedFov: 32,
-        canDoubleTap: false,
-        soundType: 'scout',
-        recoil: 0.04
-    },
     awp: {
         id: 'awp',
         name: 'AWP Magnum',
-        type: 'sniper_heavy',
+        category: 'sniper',
         damage: 115,
         penetrationPower: 0.95,
         fireRate: 1.45,
@@ -54,7 +54,7 @@ const WEAPONS = {
     deagle: {
         id: 'deagle',
         name: 'Desert Eagle',
-        type: 'pistol_heavy',
+        category: 'pistol',
         damage: 63,
         penetrationPower: 0.70,
         fireRate: 0.28,
@@ -71,7 +71,7 @@ const WEAPONS = {
     duals: {
         id: 'duals',
         name: 'Dual Berettas',
-        type: 'pistol_dual',
+        category: 'pistol',
         damage: 38,
         penetrationPower: 0.40,
         fireRate: 0.12,
@@ -84,6 +84,24 @@ const WEAPONS = {
         canDoubleTap: false,
         soundType: 'duals',
         recoil: 0.015
+    },
+    knife: {
+        id: 'knife',
+        name: 'Karambit Doppler',
+        category: 'knife',
+        damage: 45,
+        penetrationPower: 0.0,
+        fireRate: 0.4,
+        magSize: 1,
+        reloadTime: 0,
+        spread: 0,
+        inAirInaccuracy: 0,
+        headshotMultiplier: 1.5,
+        scopedFov: null,
+        canDoubleTap: false,
+        soundType: 'knife',
+        recoil: 0.0,
+        isMelee: true
     }
 };
 

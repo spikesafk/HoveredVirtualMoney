@@ -127,6 +127,77 @@ class TextureFactory {
         const tex = new THREE.CanvasTexture(canvas);
         return tex;
     }
+
+    static createMirageSandstone() {
+        const canvas = document.createElement('canvas');
+        canvas.width = 512;
+        canvas.height = 512;
+        const ctx = canvas.getContext('2d');
+
+        // Warm desert sandstone bricks
+        ctx.fillStyle = '#d9b48f';
+        ctx.fillRect(0, 0, 512, 512);
+
+        ctx.strokeStyle = '#b8926d';
+        ctx.lineWidth = 4;
+
+        // Brick pattern
+        const rowH = 64;
+        const brickW = 128;
+        for (let y = 0; y < 512; y += rowH) {
+            ctx.beginPath();
+            ctx.moveTo(0, y);
+            ctx.lineTo(512, y);
+            ctx.stroke();
+
+            const offset = (y % (rowH * 2) === 0) ? 0 : brickW / 2;
+            for (let x = offset; x < 512 + brickW; x += brickW) {
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                ctx.lineTo(x, y + rowH);
+                ctx.stroke();
+            }
+        }
+
+        ctx.fillStyle = 'rgba(0,0,0,0.06)';
+        for (let i = 0; i < 200; i++) {
+            ctx.fillRect(Math.random() * 512, Math.random() * 512, 3, 3);
+        }
+
+        const tex = new THREE.CanvasTexture(canvas);
+        tex.wrapS = THREE.RepeatWrapping;
+        tex.wrapT = THREE.RepeatWrapping;
+        return tex;
+    }
+
+    static createMirageFloor() {
+        const canvas = document.createElement('canvas');
+        canvas.width = 512;
+        canvas.height = 512;
+        const ctx = canvas.getContext('2d');
+
+        // Mirage pavement stone tiles
+        ctx.fillStyle = '#c4a682';
+        ctx.fillRect(0, 0, 512, 512);
+
+        ctx.strokeStyle = '#9c7f5f';
+        ctx.lineWidth = 3;
+        for (let x = 0; x < 512; x += 64) {
+            ctx.beginPath();
+            ctx.moveTo(x, 0); ctx.lineTo(x, 512);
+            ctx.stroke();
+        }
+        for (let y = 0; y < 512; y += 64) {
+            ctx.beginPath();
+            ctx.moveTo(0, y); ctx.lineTo(512, y);
+            ctx.stroke();
+        }
+
+        const tex = new THREE.CanvasTexture(canvas);
+        tex.wrapS = THREE.RepeatWrapping;
+        tex.wrapT = THREE.RepeatWrapping;
+        return tex;
+    }
 }
 
 window.TextureFactory = TextureFactory;

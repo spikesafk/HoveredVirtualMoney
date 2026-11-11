@@ -88,6 +88,21 @@ class SoundFX {
             osc.stop(t + 0.21);
 
             this._noiseBurst(t, 0.25, 900, 0.75, master);
+        } else if (type === 'knife') {
+            // Knife slash / stab
+            const osc = this.ctx.createOscillator();
+            const oscGain = this.ctx.createGain();
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(800, t);
+            osc.frequency.exponentialRampToValueAtTime(120, t + 0.12);
+            oscGain.gain.setValueAtTime(0.6, t);
+            oscGain.gain.exponentialRampToValueAtTime(0.01, t + 0.12);
+            osc.connect(oscGain);
+            oscGain.connect(master);
+            osc.start(t);
+            osc.stop(t + 0.13);
+
+            this._noiseBurst(t, 0.08, 1800, 0.4, master);
         } else {
             // Duals / default
             const osc = this.ctx.createOscillator();
@@ -172,6 +187,21 @@ class SoundFX {
             gain2.connect(master);
             osc2.start(t);
             osc2.stop(t + 0.13);
+        } else if (type === 'knife') {
+            // Knife slash / stab
+            const osc = this.ctx.createOscillator();
+            const oscGain = this.ctx.createGain();
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(800, t);
+            osc.frequency.exponentialRampToValueAtTime(120, t + 0.12);
+            oscGain.gain.setValueAtTime(0.6, t);
+            oscGain.gain.exponentialRampToValueAtTime(0.01, t + 0.12);
+            osc.connect(oscGain);
+            oscGain.connect(master);
+            osc.start(t);
+            osc.stop(t + 0.13);
+
+            this._noiseBurst(t, 0.08, 1800, 0.4, master);
         } else {
             // Body hitmarker tick
             const osc = this.ctx.createOscillator();
